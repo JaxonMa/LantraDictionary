@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/css/search-results.css">
+    <script src="../static/js/search-results.js"></script>
+    <title>蓝雀词典 - 搜索结果</title>
+</head>
+<body>
+    <!-- 顶部区域容器 - 包含搜索栏和示字框区域 -->
+    <div class="top-section" id="topSection">
+        <!-- 顶部搜索区域 -->
+        <header class="header">
+            <div class="header-content">
+                <a href="#" class="logo">蓝雀词典</a>
+                <div class="search-container">
+                    <label class="search-container" for="searchInput">
+                        <input type="text" class="search-box" placeholder="输入汉字/单词，回车查询" id="searchInput" value="你好">
+                    </label>
+                </div>
+            </div>
+        </header>
+        
+        <!-- 上1/3部分 - 示字框区域 -->
+        <section class="character-display-section">
+            <div class="character-container" id="characterContainer">
+                <!-- 示字框将通过JavaScript动态生成 -->
+            </div>
+        </section>
+    </div>
+    
+    <!-- 下2/3部分 - 释义卡片区域 -->
+    <section class="definition-section">
+        <div class="definition-container">
+            <!-- 删除了重复的query-word和query-pinyin -->
+            
+            <div class="definition-card">
+                <h2 class="card-title">释义</h2>
+                <div id="definitionContent">
+                    <!-- 释义内容将通过JavaScript动态生成 -->
+                </div>
+            </div>
+            
+            <div class="definition-card">
+                <h2 class="card-title">相关词语</h2>
+                <div class="related-words" id="relatedWords">
+                    <!-- 相关词语将通过JavaScript动态生成 -->
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 返回顶部按钮 -->
+    <div class="back-to-top" id="backToTop">
+        <div class="arrow-up"></div>
+    </div>
+</body>
+</html>

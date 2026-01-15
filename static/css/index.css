@@ -1,0 +1,149 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #f5f3f2;
+    font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 15vh;
+}
+
+.header-container {
+    text-align: center;
+    width: 100%;
+    margin-bottom: 60px;
+}
+
+.main-title {
+    color: #12507b;
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+}
+
+.sub-title {
+    color: #12507b;
+    font-size: 1.2rem;
+    font-weight: 300;
+    letter-spacing: 4px;
+    opacity: 0.8;
+}
+
+.search-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.search-box {
+    width: 40%;
+    padding: 18px 25px;
+    font-size: 1.1rem;
+    border: 2px solid #12507b;
+    border-radius: 25px;
+    outline: none;
+    background-color: white;
+    color: #333;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 12px rgba(18, 80, 123, 0.1);
+    text-align: center;
+}
+
+.search-box:hover {
+    width: 60%;
+    border-radius: 30px;
+    box-shadow: 0 6px 20px rgba(18, 80, 123, 0.15);
+}
+
+.search-box:focus {
+    border-color: #12507b;
+    box-shadow: 0 0 0 3px rgba(18, 80, 123, 0.2);
+}
+
+.search-box::placeholder {
+    color: #999;
+    font-weight: 300;
+    text-align: center;
+    transition: opacity 0.3s ease;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .main-title {
+        font-size: 2.5rem;
+    }
+
+    .sub-title {
+        font-size: 1rem;
+        letter-spacing: 2px;
+    }
+
+    .search-box {
+        width: 70%;
+        padding: 16px 20px;
+        border-radius: 20px;
+    }
+
+    .search-box:hover {
+        width: 85%;
+        border-radius: 25px;
+    }
+
+    body {
+        padding-top: 20vh;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-title {
+        font-size: 2rem;
+    }
+
+    .sub-title {
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+    }
+
+    .search-box {
+        width: 85%;
+        padding: 14px 18px;
+        border-radius: 18px;
+    }
+
+    .search-box:hover {
+        width: 90%;
+        border-radius: 22px;
+    }
+
+    body {
+        padding-top: 25vh;
+    }
+}
+
+/* 添加一些装饰性元素 */
+.decoration {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(18, 80, 123, 0.05) 0%, transparent 70%);
+    z-index: -1;
+}
+
+.decoration:nth-child(1) {
+    top: 10%;
+    left: 5%;
+}
+
+.decoration:nth-child(2) {
+    bottom: 10%;
+    right: 5%;
+}
