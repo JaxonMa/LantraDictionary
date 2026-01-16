@@ -1,3 +1,4 @@
+// TODO: 重写displaySearchResult()函数中的拼音展示部分，使其支持多音字显示
 // 示例数据 - 实际应用中应从后端API获取
 const sampleData = {
     query: "你好",

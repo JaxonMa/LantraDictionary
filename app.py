@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 # TODO: 防注入攻击
 
 from flask import Flask, render_template, request
