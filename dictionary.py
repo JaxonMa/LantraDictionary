@@ -1,15 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# TODO: 查词功能。先查询polyphone.json, 如果是单字，再查询char_detail.json,并且查询related_char.json。如果是词语，则查询word.json
-# TODO: 放弃Vibe Coding提供的代码逻辑，先完成后端的数据处理。可以直接查到数据之后丢给前端
 import ijson
 
 DICTIONARY_PATH = {
     'chinese': {
         'char': 'dictionary/chinese/char.json',
         'polyphone': 'dictionary/chinese/polyphone.json',
-        'related_char': 'dictionary/chinese/related_char.json',
+        'related': 'dictionary/chinese/related.json',
         'word': 'dictionary/chinese/word.json'
     }
 }
@@ -29,15 +27,20 @@ def get_target_data(query: str, lang: str, dict_name: str) -> dict[str, str]:
     with open(dict_path[dict_name], 'r', encoding='utf-8') as f:
         parser = ijson.items(f, 'item')
         for item in parser:
-            if item['char'] == query:
-                target_data = item
-                break
+            # 尝试在字典中查询，如出现KeyError，则说明传入的dict_name不是字典，则改用词典的判断逻辑
+            try:
+                if item['char'] == query:
+                    target_data = item
+                    break
+            except KeyError:
+                if item['word'] == query:
+                    target_data = item
+                    break
 
     return target_data
 
 
 def lookup(query: str, lang: str) -> dict[str, str]:
-    dict_path = DICTIONARY_PATH[lang]
     char_explanation = {
         'char': query,
         'pinyin': [],
@@ -45,7 +48,7 @@ def lookup(query: str, lang: str) -> dict[str, str]:
         'related_char': [],
     }
     word_explanation = {
-        'char': query,
+        'word': query,
         'pinyin': '',
         'explanation': ''
     }
@@ -59,20 +62,29 @@ def lookup(query: str, lang: str) -> dict[str, str]:
                 char_explanation['pinyin'] = polyphone_data['pinyin']
 
                 # 查询释义字典，获得词语解释
-                explanation_data = get_target_data(query, 'chinese', 'char')
-                print(explanation_data)
+                pronunciations_data = get_target_data(query, 'chinese', 'char')
+                char_explanation['pronunciations'] = pronunciations_data['pronunciations']
 
                 # 查询同义词词典，获得同义词列表
-                with open(dict_path['related_char'], 'r', encoding='utf-8') as f:
-                    related_char_data = json.load(f)
-                    related_char_list = [rc for rc in related_char_data if rc['char'] == query][0]
-                    char_explanation['related_char'] = related_char_list
-
+                related_char_data = get_target_data(query, lang, 'related')
+                char_explanation['related_char'] = related_char_data['synonyms']
                 return char_explanation
 
             # 输入内容为词语，查询词典
             else:
-                with open(dict_path['word'], 'r', encoding='utf-8') as f:
-                    ...
+                word_data = get_target_data(query, 'chinese', 'word')
+                word_explanation['pinyin'] = word_data['pinyin']
+                word_explanation['explanation'] = word_data['explanation']
+                return word_explanation
+        case 'english':
+            pass
 
     raise Exception('Failed to look up')
+
+
+if __name__ == '__main__':
+    char_query = lookup('厂', 'chinese')
+    print(char_query)
+
+    word_query = lookup('工厂', 'chinese')
+    print(word_query)
