@@ -1,24 +1,33 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""查询字典（词典）模块
+
+针对要查询的字词，对原始数据进行处理，得到适当的查询结果并返回。
+
+Author: Jaxon Ma
+Date: 2026-1-17
+"""
+
 import ijson
 
 DICTIONARY_PATH = {
     'chinese': {
-        'char': 'dictionary/chinese/char.json',
-        'polyphone': 'dictionary/chinese/polyphone.json',
+        'char_base': 'dictionary/chinese/char_base.json',
+        'char_detail': 'dictionary/chinese/char_detail.json',
         'related': 'dictionary/chinese/related.json',
         'word': 'dictionary/chinese/word.json'
     }
 }
 
 
-def get_target_data(query: str, lang: str, dict_name: str) -> dict[str, str]:
-    """
-    获得目标字典中指定的数据
+def _get_target_data(query: str, lang: str, dict_name: str) -> dict[str, str | list[dict]]:
+    """获得目标字典（词典）中指定的原始数据
+
     :param query: 要查询的字词
     :param lang: 字词的语言，可选值为 'chinese', 'english'
     :param dict_name: 词典的名字。根据lang的不同，其对应的可选的词典名也会发生变化
+
     :return: 指定字词的数据。
         e.g: {'index': 6, 'char': '厂', 'strokes': 2, 'pinyin': ['chǎng', 'ān', 'hàn'], 'frequency': 0}
     """
@@ -40,10 +49,18 @@ def get_target_data(query: str, lang: str, dict_name: str) -> dict[str, str]:
     return target_data
 
 
-def lookup(query: str, lang: str) -> dict[str, str]:
+def lookup(query: str, lang: str) -> dict[str, str | list[dict]]:
+    """在字典（词典）中查询指定的字词
+
+    :param query: 要查询的字词
+    :param lang: 字词的语言，可选值为 'chinese', 'english'
+
+    :return: 指定字词的查询数据
+    """
     char_explanation = {
         'char': query,
         'pinyin': [],
+        'radicals': '',
         'pronunciations': [],
         'related_char': [],
     }
@@ -57,25 +74,45 @@ def lookup(query: str, lang: str) -> dict[str, str]:
         case 'chinese':
             # 输入内容为单字，查询字典
             if len(query) == 1:
-                # 查询多音字字典，获得所有发音
-                polyphone_data = get_target_data(query, 'chinese', 'polyphone')
-                char_explanation['pinyin'] = polyphone_data['pinyin']
+                # 查询基本字典，获得所有发音及偏旁部首
+                char_base_data = _get_target_data(query, 'chinese', 'char_base')
+                char_explanation['pinyin'] = char_base_data['pinyin']
+                char_explanation['radicals'] = char_base_data['radicals']
 
                 # 查询释义字典，获得词语解释
-                pronunciations_data = get_target_data(query, 'chinese', 'char')
-                char_explanation['pronunciations'] = pronunciations_data['pronunciations']
+                pronunciations_data = _get_target_data(query, 'chinese', 'char_detail')
+                explanations = pronunciations_data['pronunciations']
+                # 仅保留原始数据中的'content'一项
+                for expl in explanations:
+                    expl_data = {'pinyin': expl['pinyin'],
+                                 'explanation': []}
+                    for single_expl in expl['explanations']:
+                        # noinspection PyTypeChecker
+                        # 此处是根据原始数据的特征编写的，每一个释义中都包含content键，因此这样书写不会有问题
+                        expl_data['explanation'].append(single_expl['content'])
+                    char_explanation['pronunciations'].append(expl_data)
 
                 # 查询同义词词典，获得同义词列表
-                related_char_data = get_target_data(query, lang, 'related')
-                char_explanation['related_char'] = related_char_data['synonyms']
+                try:
+                    related_char_data = _get_target_data(query, lang, 'related')
+                    char_explanation['related_char'] = related_char_data['synonyms']
+                # 同义词词典中没有数据
+                except KeyError:
+                    char_explanation['related_char'] = []
+
                 return char_explanation
 
             # 输入内容为词语，查询词典
             else:
-                word_data = get_target_data(query, 'chinese', 'word')
-                word_explanation['pinyin'] = word_data['pinyin']
-                word_explanation['explanation'] = word_data['explanation']
-                return word_explanation
+                try:
+                    word_data = _get_target_data(query, 'chinese', 'word')
+                    word_explanation['pinyin'] = word_data['pinyin']
+                    word_explanation['explanation'] = word_data['explanation']
+                    return word_explanation
+                # 数据库中没有要查询的字词
+                except KeyError:
+                    raise Exception('Word not found')
+
         case 'english':
             pass
 
@@ -83,8 +120,8 @@ def lookup(query: str, lang: str) -> dict[str, str]:
 
 
 if __name__ == '__main__':
-    char_query = lookup('厂', 'chinese')
+    char_query = lookup('蛇', 'chinese')
     print(char_query)
 
-    word_query = lookup('工厂', 'chinese')
+    word_query = lookup('蟒蛇', 'chinese')
     print(word_query)
