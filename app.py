@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# TODO: 防注入攻击
-
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, jsonify
 from flask_cors import CORS
+from langid import classify
 
 import dictionary
 
@@ -24,7 +23,8 @@ def search_results():
 
 @app.route('/api/lookup/<query>', methods=['POST'])
 def lookup(query):
-    query_res = dictionary.lookup(query, 'chinese')
+    lang = classify(query)[0]
+    query_res = dictionary.lookup(query, lang)
     return jsonify(query_res)
 
 

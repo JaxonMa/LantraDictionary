@@ -12,7 +12,7 @@ Date: 2026-1-17
 import ijson
 
 DICTIONARY_PATH = {
-    'chinese': {
+    'zh': {
         'char_base': 'dictionary/chinese/char_base.json',
         'char_detail': 'dictionary/chinese/char_detail.json',
         'related': 'dictionary/chinese/related.json',
@@ -25,7 +25,7 @@ def _get_target_data(query: str, lang: str, dict_name: str) -> dict[str, str | l
     """获得目标字典（词典）中指定的原始数据
 
     :param query: 要查询的字词
-    :param lang: 字词的语言，可选值为 'chinese', 'english'
+    :param lang: 字词的语言，可选值为 'zh', 'en'
     :param dict_name: 词典的名字。根据lang的不同，其对应的可选的词典名也会发生变化
 
     :return: 指定字词的数据。
@@ -71,16 +71,16 @@ def lookup(query: str, lang: str) -> dict[str, str | list[dict]]:
     }
 
     match lang:
-        case 'chinese':
+        case 'zh':
             # 输入内容为单字，查询字典
             if len(query) == 1:
                 # 查询基本字典，获得所有发音及偏旁部首
-                char_base_data = _get_target_data(query, 'chinese', 'char_base')
+                char_base_data = _get_target_data(query, lang, 'char_base')
                 char_explanation['pinyin'] = char_base_data['pinyin']
                 char_explanation['radicals'] = char_base_data['radicals']
 
                 # 查询释义字典，获得词语解释
-                pronunciations_data = _get_target_data(query, 'chinese', 'char_detail')
+                pronunciations_data = _get_target_data(query, lang, 'char_detail')
                 explanations = pronunciations_data['pronunciations']
                 # 仅保留原始数据中的'content'一项
                 for expl in explanations:
@@ -105,7 +105,7 @@ def lookup(query: str, lang: str) -> dict[str, str | list[dict]]:
             # 输入内容为词语，查询词典
             else:
                 try:
-                    word_data = _get_target_data(query, 'chinese', 'word')
+                    word_data = _get_target_data(query, lang, 'word')
                     word_explanation['pinyin'] = word_data['pinyin']
                     word_explanation['explanation'] = word_data['explanation']
                     return word_explanation
@@ -113,15 +113,16 @@ def lookup(query: str, lang: str) -> dict[str, str | list[dict]]:
                 except KeyError as e:
                     raise Exception('Word not found', e)
 
-        case 'english':
-            pass
+        case 'en':
+            raise Exception('English is not supported yet.')
 
-    raise Exception('Failed to look up')
+        case _:
+            raise Exception('Failed to look up')
 
 
 if __name__ == '__main__':
-    char_query = lookup('蛇', 'chinese')
+    char_query = lookup('蛇', 'zh')
     print(char_query)
 
-    word_query = lookup('蟒蛇', 'chinese')
+    word_query = lookup('蟒蛇', 'zh')
     print(word_query)
