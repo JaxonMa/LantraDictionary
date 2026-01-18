@@ -18,9 +18,11 @@
     </div>
     
     <div class="search-container">
-        <label class="search-container">
-            <input type="text" class="search-box" placeholder="输入汉字/单词，回车查询">
-        </label>
+        <form class="search-container" action="{{ url_for('search') }}">
+            <label class="search-container">
+                <input type="text" class="search-box" placeholder="输入汉字/单词，回车查询">
+            </label>
+        </form>
     </div>
 
 

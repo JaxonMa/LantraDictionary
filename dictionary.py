@@ -110,8 +110,8 @@ def lookup(query: str, lang: str) -> dict[str, str | list[dict]]:
                     word_explanation['explanation'] = word_data['explanation']
                     return word_explanation
                 # 数据库中没有要查询的字词
-                except KeyError:
-                    raise Exception('Word not found')
+                except KeyError as e:
+                    raise Exception('Word not found', e)
 
         case 'english':
             pass
