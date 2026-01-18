@@ -1,4 +1,4 @@
-// animation.js - 蓝雀词典搜索结果页面动画效果
+// search-results-animation.js - 蓝雀词典搜索结果页面动画效果
 
 // 页面加载动画
 function initPageAnimation() {

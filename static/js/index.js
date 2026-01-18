@@ -18,6 +18,17 @@ document.addEventListener('DOMContentLoaded', function() {
         this.setAttribute('placeholder', originalPlaceholder);
     });
 
+    // 按下回车跳转并将输入的字词存储到sessionStorage
+    searchBox.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            const query = this.value.trim()
+            if (query) {
+                sessionStorage.setItem('query', query);
+                window.location.href = '/search-results';
+            }
+        }
+    })
+
     // 添加页面加载时的动画效果
     setTimeout(() => {
         document.querySelector('.header-container').style.opacity = '1';

@@ -17,9 +17,8 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/search', methods=['GET'])
-def search():
-    word = request.values.get('word')
+@app.route('/search-results')
+def search_results():
     return render_template('search-results.html')
 
 
