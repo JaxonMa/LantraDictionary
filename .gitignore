@@ -1,4 +1,4 @@
-# Created by Caff (JaxonMa)
+# Created by Jaxon Ma
 .idea
 .venv
-.get_data.py
+dictionary/chinese/*.json
