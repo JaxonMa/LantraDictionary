@@ -75,12 +75,12 @@ def lookup(query, lang='zh') -> dict[str, str]:
                     char_result['pronunciations'].append(pinyin_explanation)
                     break
 
-            with open(DICTIONARY_PATH[lang]['related'], 'r', encoding='utf-8') as f:
-                # 获得相关汉字
-                for item in ijson.items(f, 'item'):
-                    if item['char'] == query:
-                        char_result['related_char'] = item.get('synonyms', [])
-                        break
+        with open(DICTIONARY_PATH[lang]['related'], 'r', encoding='utf-8') as f:
+            # 获得相关汉字
+            for item in ijson.items(f, 'item'):
+                if item['char'] == query:
+                    char_result['related_char'] = item.get('synonyms', [])
+                    break
 
         return char_result
     
