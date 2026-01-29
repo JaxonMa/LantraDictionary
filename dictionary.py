@@ -31,10 +31,10 @@ def lookup(query, lang='zh') -> dict[str, str]:
     """
     char_result = {
         "query": query,
-        "pinyin": "",
-        "strokes": "",
-        "radical": "",
-        "explanation": [],
+        "pinyin": [],
+        "radicals": "",
+        "pronunciations": [],
+        "related_char": []
     }
     word_result = {
         "query": query,
@@ -48,16 +48,20 @@ def lookup(query, lang='zh') -> dict[str, str]:
             # 获得汉字基本信息
             for item in ijson.items(f, 'item'):
                 if item['char'] == query:
-                    char_result['pinyin'] = item.get('pinyin', '')
-                    char_result['strokes'] = item.get('strokes', '')
-                    char_result['radical'] = item.get('radical', '')
+                    char_result['pinyin'] = item.get('pinyin', [])
+                    char_result['radicals'] = item.get('radicals', [])
                     break
         with open(DICTIONARY_PATH[lang]['char_detail'], 'r', encoding='utf-8') as f:
             # 获得汉字详细解释
             for item in ijson.items(f, 'item'):
                 if item['char'] == query:
-                    char_result['explanation'] = item.get('explanation', [])
+                    pronunciations = item.get('pronunciations', [])[0]
+                    print(pronunciations)
+                    for pron in pronunciations:
+                        print(pron)
+                        char_result['pronunciations'].append(pron["content"])
                     break
+        print(char_result)
         return char_result
     else:
         # 查询词语
