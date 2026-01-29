@@ -6,7 +6,7 @@
 针对要查询的字词，对原始数据进行处理，得到适当的查询结果并返回。
 
 Author: Jaxon Ma
-Date: 2026-1-17
+Date: 2026-1-30
 """
 
 import ijson
@@ -30,14 +30,14 @@ def lookup(query, lang='zh') -> dict[str, str]:
         dict[str, str]: 查询结果
     """
     char_result = {
-        "query": query,
+        "char": query,
         "pinyin": [],
         "radicals": "",
         "pronunciations": [],
         "related_char": []
     }
     word_result = {
-        "query": query,
+        "word": query,
         "pinyin": "",
         "explanation": [],
     }
@@ -51,7 +51,7 @@ def lookup(query, lang='zh') -> dict[str, str]:
                     char_result['pinyin'] = item.get('pinyin', [])
                     char_result['radicals'] = item.get('radicals', [])
                     break
-                
+
         with open(DICTIONARY_PATH[lang]['char_detail'], 'r', encoding='utf-8') as f:
             # 获得汉字详细解释
             for item in ijson.items(f, 'item'):
@@ -59,17 +59,29 @@ def lookup(query, lang='zh') -> dict[str, str]:
                     pronunciations = item.get('pronunciations', [])[0]
                     pinyin_explanation = {
                         "pinyin": "",
-                        "explanations": []
+                        "explanation": []
                     }
 
                     for pron in pronunciations:
+                        # 筛选原始数据中的信息
                         if pron == "pinyin":
                             pinyin_explanation["pinyin"] = pronunciations[pron]
                         elif pron == "explanations":
                             for explanation in pronunciations[pron]:
-                                pinyin_explanation["explanations"].append(explanation["content"])
+                                # 包含解释的数据已经结束
+                                if not "content" in explanation:
+                                    break
+                                pinyin_explanation["explanation"].append(explanation["content"])
                     char_result['pronunciations'].append(pinyin_explanation)
                     break
+
+            with open(DICTIONARY_PATH[lang]['related'], 'r', encoding='utf-8') as f:
+                # 获得相关汉字
+                for item in ijson.items(f, 'item'):
+                    if item['char'] == query:
+                        char_result['related_char'] = item.get('synonyms', [])
+                        break
+
         return char_result
     
     else:
