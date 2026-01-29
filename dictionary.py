@@ -22,8 +22,53 @@ DICTIONARY_PATH = {
 
 
 def lookup(query, lang='zh') -> dict[str, str]:
-    result = {}
-    return result
+    """查询字典（词典）
+    Args:
+        query (str): 要查询的字词
+        lang (str, optional): 语言代码. 默认为 'zh'.
+    Returns:
+        dict[str, str]: 查询结果
+    """
+    char_result = {
+        "query": query,
+        "pinyin": "",
+        "strokes": "",
+        "radical": "",
+        "explanation": [],
+    }
+    word_result = {
+        "query": query,
+        "pinyin": "",
+        "explanation": [],
+    }
+
+    if len(query) == 1:
+        # 查询单个汉字  
+        with open(DICTIONARY_PATH[lang]['char_base'], 'r', encoding='utf-8') as f:
+            # 获得汉字基本信息
+            for item in ijson.items(f, 'item'):
+                if item['char'] == query:
+                    char_result['pinyin'] = item.get('pinyin', '')
+                    char_result['strokes'] = item.get('strokes', '')
+                    char_result['radical'] = item.get('radical', '')
+                    break
+        with open(DICTIONARY_PATH[lang]['char_detail'], 'r', encoding='utf-8') as f:
+            # 获得汉字详细解释
+            for item in ijson.items(f, 'item'):
+                if item['char'] == query:
+                    char_result['explanation'] = item.get('explanation', [])
+                    break
+        return char_result
+    else:
+        # 查询词语
+        with open(DICTIONARY_PATH[lang]['word'], 'r', encoding='utf-8') as f:
+            for item in ijson.items(f, 'item'):
+                if item['word'] == query:
+                    word_result['pinyin'] = item.get('pinyin', '')
+                    word_result['explanation'] = item.get('explanation', [])
+                    break
+        return word_result
+
 
 
 if __name__ == '__main__':
