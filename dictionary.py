@@ -41,6 +41,8 @@ def lookup(query,) -> dict[str, str]:
         "explanation": [],
     }
 
+    lang = 'zh'  # 目前仅支持中文查询
+
     if len(query) == 1:
         # 查询单个汉字  
         with open(DICTIONARY_PATH[lang]['char_base'], 'r', encoding='utf-8') as f:
