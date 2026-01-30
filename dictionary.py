@@ -89,11 +89,20 @@ def lookup(query, lang='zh') -> dict[str, str]:
         with open(DICTIONARY_PATH[lang]['word'], 'r', encoding='utf-8') as f:
             for item in ijson.items(f, 'item'):
                 if item['word'] == query:
-                    word_result['pinyin'] = item.get('pinyin', '')
+                    pinyin = item.get('pinyin', '').split()
+                    pinyin_processed = []
+
+                    for p in pinyin:
+                        # 处理拼音中的大写英文字母，在其之间添加空格，保证前端拼音显示正确
+                        if p[0].isupper():
+                            pinyin_processed.append(' '.join(list(p)))
+                        else:
+                            pinyin_processed.append(p)
+
+                    word_result['pinyin'] = ' '.join(pinyin_processed)
                     word_result['explanation'] = item.get('explanation', [])
                     break
         return word_result
-
 
 
 if __name__ == '__main__':
