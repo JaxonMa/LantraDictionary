@@ -21,11 +21,10 @@ DICTIONARY_PATH = {
 }
 
 
-def lookup(query, lang='zh') -> dict[str, str]:
+def lookup(query,) -> dict[str, str]:
     """查询字典（词典）
     Args:
         query (str): 要查询的字词
-        lang (str, optional): 语言代码. 默认为 'zh'.
     Returns:
         dict[str, str]: 查询结果
     """
@@ -81,7 +80,7 @@ def lookup(query, lang='zh') -> dict[str, str]:
                 if item['char'] == query:
                     char_result['related_char'] = item.get('synonyms', [])
                     break
-
+        print(char_result)
         return char_result
     
     else:

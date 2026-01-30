@@ -3,7 +3,6 @@
 
 from flask import Flask, render_template, jsonify
 from flask_cors import CORS
-from langid import classify
 
 import dictionary
 
@@ -23,8 +22,7 @@ def search_results():
 
 @app.route('/api/lookup/<query>', methods=['POST'])
 def lookup(query):
-    lang = classify(query)[0]
-    query_res = dictionary.lookup(query, lang)
+    query_res = dictionary.lookup(query)
     return jsonify(query_res)
 
 
