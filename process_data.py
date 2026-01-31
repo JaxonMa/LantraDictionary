@@ -31,8 +31,8 @@ def process():
             target_file.write("[\n")  
             for item in parser:
                 result = dictionary.lookup(item)
-                json.dump(result, target_file, ensure_ascii=False)
-                target_file.write(",\n")
+                json_obj = ''.join((str(result), ',\n'))
+                json.dump(json_obj, target_file, ensure_ascii=False)
             target_file.write("]\n")
     print("Done.")
 
@@ -43,8 +43,8 @@ def process():
             target_file.write("[\n")
             for item in parser:
                 result = dictionary.lookup(item)
-                json.dump(result, target_file, ensure_ascii=False)
-                target_file.write(",\n")
+                json_obj = ''.join((str(result), ',\n'))
+                json.dump(json_obj, target_file, ensure_ascii=False)
             target_file.write("]\n")
     print("Done.")
 
