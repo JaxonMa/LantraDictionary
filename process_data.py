@@ -9,8 +9,10 @@ Author: Jaxon Ma
 Date: 2026-1-30
 """
 
-import ijson
 import json
+import time
+
+import ijson
 import dictionary
 
 
@@ -22,30 +24,112 @@ TARGET_PATH = {
 }
 
 
+def load_data():
+    """Load all dictionary data into memory for fast access"""
+    print("Loading dictionary data...")
+    char_base_data = {}
+    char_detail_data = {}
+    related_data = {}
+    word_data = {}
+    
+    with open(dictionary.DICTIONARY_PATH['zh']['char_base'], 'r', encoding='utf-8') as f:
+        for item in ijson.items(f, 'item'):
+            char_base_data[item['char']] = item
+    
+    with open(dictionary.DICTIONARY_PATH['zh']['char_detail'], 'r', encoding='utf-8') as f:
+        for item in ijson.items(f, 'item'):
+            char_detail_data[item['char']] = item
+    
+    with open(dictionary.DICTIONARY_PATH['zh']['related'], 'r', encoding='utf-8') as f:
+        for item in ijson.items(f, 'item'):
+            related_data[item['char']] = item
+    
+    with open(dictionary.DICTIONARY_PATH['zh']['word'], 'r', encoding='utf-8') as f:
+        for item in ijson.items(f, 'item'):
+            word_data[item['word']] = item
+    
+    return char_base_data, char_detail_data, related_data, word_data
+
+
+def process_char_data(char_base_data, char_detail_data, related_data):
+    """Process character data"""
+    results = []
+    for char, base_item in char_base_data.items():
+        char_result = {
+            "char": char,
+            "pinyin": base_item.get('pinyin', []),
+            "radicals": base_item.get('radicals', ''),
+            "pronunciations": [],
+            "related_char": []
+        }
+        
+        # Add pronunciations from detail
+        if char in char_detail_data:
+            detail_item = char_detail_data[char]
+            pronunciations = detail_item.get('pronunciations', [])
+            for pron in pronunciations:
+                pinyin_explanation = {
+                    "pinyin": pron.get('pinyin', ''),
+                    "explanation": []
+                }
+                explanations = pron.get('explanations', [])
+                for exp in explanations:
+                    if "content" in exp:
+                        pinyin_explanation['explanation'].append(exp['content'])
+                char_result['pronunciations'].append(pinyin_explanation)
+        
+        # Add related chars
+        if char in related_data:
+            char_result['related_char'] = related_data[char].get('synonyms', [])
+        
+        results.append(char_result)
+    
+    return results
+
+
+def process_word_data(word_data):
+    """Process word data"""
+    results = []
+    for word, item in word_data.items():
+        pinyin = item.get('pinyin', '').split()
+        pinyin_processed = []
+        
+        for p in pinyin:
+            if p and p[0].isupper():
+                pinyin_processed.append(' '.join(list(p)))
+            else:
+                pinyin_processed.append(p)
+        
+        word_result = {
+            "word": word,
+            "pinyin": ' '.join(pinyin_processed),
+            "explanation": item.get('explanation', [])
+        }
+        results.append(word_result)
+    
+    return results
+
+
 def process():
     """处理原始数据，生成适合查询的格式"""
+    char_base_data, char_detail_data, related_data, word_data = load_data()
+    
     print("Processing Chinese characters...")
-    with open(dictionary.DICTIONARY_PATH['zh']['char_base'], 'r', encoding='utf-8') as char_file:
-        parser = ijson.items(char_file, 'item.char')
-        with open(TARGET_PATH['zh']['char'], 'a', encoding='utf-8') as target_file:
-            target_file.write("[\n")  
-            for item in parser:
-                result = dictionary.lookup(item)
-                json_obj = ''.join((str(result), ',\n'))
-                json.dump(json_obj, target_file, ensure_ascii=False)
-            target_file.write("]\n")
+    t1 = time.time()
+    char_results = process_char_data(char_base_data, char_detail_data, related_data)
+    with open(TARGET_PATH['zh']['char'], 'w', encoding='utf-8') as f:
+        json.dump(char_results, f, ensure_ascii=False, indent=2)
+    t2 = time.time()
+    print(f"Time taken: {t2 - t1:.2f} seconds")
     print("Done.")
-
+    
     print("Processing Chinese words...")
-    with open(dictionary.DICTIONARY_PATH['zh']['word'], 'r', encoding='utf-8') as word_file:
-        parser = ijson.items(word_file, 'item.word')
-        with open(TARGET_PATH['zh']['word'], 'a', encoding='utf-8') as target_file:
-            target_file.write("[\n")
-            for item in parser:
-                result = dictionary.lookup(item)
-                json_obj = ''.join((str(result), ',\n'))
-                json.dump(json_obj, target_file, ensure_ascii=False)
-            target_file.write("]\n")
+    t3 = time.time()
+    word_results = process_word_data(word_data)
+    with open(TARGET_PATH['zh']['word'], 'w', encoding='utf-8') as f:
+        json.dump(word_results, f, ensure_ascii=False, indent=2)
+    t4 = time.time()
+    print(f"Time taken: {t4 - t3:.2f} seconds")
     print("Done.")
 
 
