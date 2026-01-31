@@ -57,7 +57,7 @@ def lookup(query,) -> dict[str, str]:
             # 获得汉字详细解释
             for item in ijson.items(f, 'item'):
                 if item['char'] == query:
-                    pronunciations = item.get('pronunciations', [])[0]
+                    pronunciations = item.get('pronunciations', [])
                     pinyin_explanation = {
                         "pinyin": "",
                         "explanation": []
@@ -65,15 +65,16 @@ def lookup(query,) -> dict[str, str]:
 
                     for pron in pronunciations:
                         # 筛选原始数据中的信息
-                        if pron == "pinyin":
-                            pinyin_explanation["pinyin"] = pronunciations[pron]
-                        elif pron == "explanations":
-                            for explanation in pronunciations[pron]:
-                                # 包含解释的数据已经结束
-                                if not "content" in explanation:
-                                    break
-                                pinyin_explanation["explanation"].append(explanation["content"])
-                    char_result['pronunciations'].append(pinyin_explanation)
+                        pinyin_explanation['pinyin'] = pron.get('pinyin', '')
+                        explanations = pron.get('explanations', [])
+                        for exp in explanations:
+                            if "content" in exp:
+                                pinyin_explanation['explanation'].append(exp['content'])
+                                char_result['pronunciations'].append(pinyin_explanation)
+                            pinyin_explanation = {
+                                "pinyin": "",
+                                "explanation": []
+                            }
                     break
 
         with open(DICTIONARY_PATH[lang]['related'], 'r', encoding='utf-8') as f:
@@ -82,7 +83,6 @@ def lookup(query,) -> dict[str, str]:
                 if item['char'] == query:
                     char_result['related_char'] = item.get('synonyms', [])
                     break
-        print(char_result)
         return char_result
     
     else:
@@ -107,8 +107,11 @@ def lookup(query,) -> dict[str, str]:
 
 
 if __name__ == '__main__':
-    char_query = lookup('蛇', 'zh')
+    char_query = lookup('蛇')
     print(char_query)
 
-    word_query = lookup('蟒蛇', 'zh')
+    polyphonic_char_query = lookup('行')
+    print(polyphonic_char_query)
+
+    word_query = lookup('蟒蛇')
     print(word_query)

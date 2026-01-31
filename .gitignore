@@ -2,5 +2,6 @@
 .idea
 .venv
 dictionary/chinese/*.json
+processed/chinese/*.json
 __pycache__
 *.pyc
