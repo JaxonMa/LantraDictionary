@@ -70,11 +70,12 @@ def lookup(query,) -> dict[str, str]:
                         for exp in explanations:
                             if "content" in exp:
                                 pinyin_explanation['explanation'].append(exp['content'])
-                                char_result['pronunciations'].append(pinyin_explanation)
-                            pinyin_explanation = {
-                                "pinyin": "",
-                                "explanation": []
-                            }
+                        # 同一拼音的解释已经结束
+                        char_result['pronunciations'].append(pinyin_explanation)
+                        pinyin_explanation = {
+                            "pinyin": "",
+                            "explanation": []
+                        }
                     break
 
         with open(DICTIONARY_PATH[lang]['related'], 'r', encoding='utf-8') as f:
