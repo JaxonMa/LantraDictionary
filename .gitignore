@@ -1,6 +1,7 @@
 # Created by Jaxon Ma
 .idea
 .venv
+.DS_Store
 dictionary/chinese/*.json
 processed/chinese/*.json
 __pycache__
