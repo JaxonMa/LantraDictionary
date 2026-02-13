@@ -24,8 +24,8 @@ document.addEventListener('DOMContentLoaded', function() {
         showLoadingState();
 
         try {
-            // 向后端API发送GET请求
-            fetch(`/api/lookup/${query}`, {
+            // 向后端发送GET请求
+            fetch(`/lookup/${query}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
