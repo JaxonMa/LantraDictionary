@@ -13,10 +13,8 @@ import ijson
 
 DICTIONARY_PATH = {
     'zh': {
-        'char_base': 'dictionary/chinese/char_base.json',
-        'char_detail': 'dictionary/chinese/char_detail.json',
-        'related': 'dictionary/chinese/related.json',
-        'word': 'dictionary/chinese/word.json'
+        'char': 'processed/chinese/char.json',
+        'word': 'processed/chinese/word.json'
     }
 }
 
@@ -30,9 +28,9 @@ def lookup(query,) -> dict[str, str]:
     """
     language = 'zh'
 
-    if query == 1:
+    if len(query) == 1:
         # 查询单个汉字
-        with open(DICTIONARY_PATH[language]['char_base'], 'r', encoding='utf-8') as f:
+        with open(DICTIONARY_PATH[language]['char'], 'r', encoding='utf-8') as f:
             for item in ijson.items(f, 'item'):
                 if item['char'] == query:
                     return item

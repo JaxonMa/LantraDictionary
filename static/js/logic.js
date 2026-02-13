@@ -25,12 +25,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             // 向后端API发送GET请求
-            fetch('/api/lookup/' + query, {
+            fetch(`/api/lookup/${query}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                mode: 'cors',
             })
 
             .then(response => {
@@ -42,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             .then(data => {
                 // 根据返回的数据类型显示结果
+                console.log('查询结果:', data);
                 if (data.char) {
                     // 单字数据
                     displayCharacterResult(data);
