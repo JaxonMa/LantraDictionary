@@ -24,35 +24,38 @@ document.addEventListener('DOMContentLoaded', function() {
         showLoadingState();
 
         try {
-            // 向后端API发送POST请求
-            const response = await fetch('/api/lookup/' + query, {
-                method: 'POST',
+            // 向后端API发送GET请求
+            fetch('/api/lookup/' + query, {
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ q: query })
-            });
+                mode: 'cors',
+            })
 
-            if (!response.ok) {
-                throw new Error(`请求失败: ${response.status}`);
-            }
-
-            const data = await response.json();
-
-            // 根据返回的数据类型显示结果
-            if (data.char) {
-                // 单字数据
-                displayCharacterResult(data);
-            } else if (data.word) {
-                // 词语数据
-                displayWordResult(data);
-            } else if (data.error) {
-                // 返回错误信息
-                displayNoResult(query, data.error);
-            } else {
-                // 未知数据格式
-                displayNoResult(query, '返回数据格式不正确');
-            }
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`请求失败: ${response.status}`);
+                }
+                return response.json();
+            })
+            
+            .then(data => {
+                // 根据返回的数据类型显示结果
+                if (data.char) {
+                    // 单字数据
+                    displayCharacterResult(data);
+                } else if (data.word) {
+                    // 词语数据
+                    displayWordResult(data);
+                } else if (data.error) {
+                    // 返回错误信息
+                    displayNoResult(query, data.error);
+                } else {
+                    // 未知数据格式
+                    displayNoResult(query, '返回数据格式不正确');
+                }
+            })
         } catch (error) {
             console.error('搜索请求失败:', error);
             displayNoResult(query, `请求失败: ${error.message}`);

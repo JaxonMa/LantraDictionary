@@ -20,7 +20,7 @@ def search_results():
     return render_template('search-results.html')
 
 
-@app.route('/api/lookup/<query>', methods=['POST'])
+@app.route('/api/lookup/<query>', methods=['GET'])
 def lookup(query):
     query_res = dictionary.lookup(query)
     return jsonify(query_res)
