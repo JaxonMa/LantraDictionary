@@ -41,7 +41,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             .then(data => {
                 // 根据返回的数据类型显示结果
-                console.log('查询结果:', data);
                 if (data.char) {
                     // 单字数据
                     displayCharacterResult(data);

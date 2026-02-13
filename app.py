@@ -22,8 +22,16 @@ def search_results():
 
 @app.route('/lookup/<query>', methods=['GET'])
 def lookup(query):
-    query_res = dictionary.lookup(query)
-    return jsonify(query_res)
+    # 调用dictionary模块的lookup函数进行查询
+    try:
+        query_res = dictionary.lookup(query)
+        return jsonify(query_res)
+    except ValueError as e:
+        err_msg = {'error': str(e)}
+        return jsonify(err_msg)
+    except Exception as e:
+        err_msg = {'error': '发生了未知错误'}
+        return jsonify(err_msg)
 
 
 if __name__ == '__main__':
