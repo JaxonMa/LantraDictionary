@@ -7,9 +7,6 @@
 
 ## 注意事项
 
-本项目的前端代码为 Vibe Coding 生成，仅Python代码是由人工编写的。该项目是对 Vibe Coding 的一次尝试，尝试重构已有的项目能否达到更好的效果。
-事实证明通过 Vibe Coding，开发效率及编码体验都得到了很大的提升，并且达到了预期的效果。
-
 鉴于仓库大小，字典（词典）数据文件没有上传。
 
 ## 开发环境
@@ -20,14 +17,15 @@
 
 > flask == 3.1.2
 >
-> flask-cors == 6.0.2
->
 > ijson == 3.4.0
 
 ## 运行截图
 
-![蓝雀词典 - 首页](http://youke.xn--y7xa690gmna.cn/s1/2026/01/18/696c87234bfa7.webp)
-![蓝雀词典 - 搜索结果页](http://youke.xn--y7xa690gmna.cn/s1/2026/01/18/696c87233e821.webp)
+![蓝雀词典 - 首页](https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBZvtpjynvSm3K6hm8plj9ki5RjLa4XAAC0QtrG5FxeES2yDNu1LM49wEAAwIAA3cAAzoE.png)
+![蓝雀词典 - 单字搜索结果](https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBZvxpjyoQhx_DKiNH6Xn7qakPR4UR-gAC0gtrG5FxeERON-i9kbHUzwEAAwIAA3cAAzoE.png)
+![蓝雀词典 - 词语搜索结果](https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBZv1pjyrWNc07hyr0f0GOM_zG6sffgQAC1AtrG5FxeETsh9cGmL4CPQEAAwIAA3cAAzoE.png)
+![蓝雀词典 - 含字母的词语](https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBZv5pjysZleTreyzocoqqU83Pjt6XYAAC1QtrG5FxeERXCFjwGDW23AEAAwIAA3cAAzoE.png)
+
 
 ## 参考资料
 
