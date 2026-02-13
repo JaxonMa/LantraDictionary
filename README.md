@@ -13,11 +13,10 @@
 
 > Python 3.12
 
-使用了以下Python包：
-
-> flask == 3.1.2
->
-> ijson == 3.4.0
+使用以下命令安装依赖
+~~~ bash
+pip install -r requirements.txt
+~~~
 
 ## 运行截图
 
