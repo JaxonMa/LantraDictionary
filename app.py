@@ -6,6 +6,7 @@ from flask import Flask, render_template, jsonify
 import dictionary
 
 app = Flask(__name__)
+URI = 'mongodb://localhost:27017'  # Replace with your MongoDB URI
 
 
 @app.route('/')
@@ -21,15 +22,14 @@ def search_results():
 @app.route('/lookup/<query>', methods=['GET'])
 def lookup(query):
     # 调用dictionary模块的lookup函数进行查询
-    uri = 'URI_TO_YOUR_MONGODB_SERVER'  # Replace with your MongoDB URI
     try:
-        query_res = dictionary.lookup(query, uri)
+        query_res = dictionary.lookup(query, URI)
         return jsonify(query_res)
     except ValueError as e:
         err_msg = {'error': str(e)}
         return jsonify(err_msg)
     except Exception as e:
-        err_msg = {'error': '发生了未知错误'}
+        err_msg = {'error': f'发生了未知错误: {str(e)}'}
         return jsonify(err_msg)
 
 
