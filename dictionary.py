@@ -11,13 +11,6 @@ Date: 2026-1-30
 
 from pymongo import MongoClient
 
-DICTIONARY_PATH = {
-    'zh': {
-        'char': 'processed/chinese/char.json',
-        'word': 'processed/chinese/word.json'
-    }
-}
-
 
 def lookup(query: str, uri: str) -> dict[str, str]:
     """查询字典（词典）
@@ -53,7 +46,7 @@ def lookup(query: str, uri: str) -> dict[str, str]:
 
 
 if __name__ == '__main__':
-    uri = 'URI_TO_YOUR_MONGODB_SERVER'  # Replace with your MongoDB URI
+    uri = 'mongodb://localhost:27017'
     char_query = lookup('蛇', uri)
     print(char_query)
 
