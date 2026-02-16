@@ -9,7 +9,7 @@ Author: Jaxon Ma
 Date: 2026-1-30
 """
 
-import ijson
+from pymongo import MongoClient
 
 DICTIONARY_PATH = {
     'zh': {
@@ -19,38 +19,46 @@ DICTIONARY_PATH = {
 }
 
 
-def lookup(query,) -> dict[str, str]:
+def lookup(query: str, uri: str) -> dict[str, str]:
     """查询字典（词典）
     Args:
         query (str): 要查询的字词
     Returns:
         dict[str, str]: 查询结果
     """
-    language = 'zh'
+    language = 'zh'  # 目前仅支持中文查询，后续可根据需要添加其他语言的支持
 
-    if len(query) == 1:
-        # 查询单个汉字
-        with open(DICTIONARY_PATH[language]['char'], 'r', encoding='utf-8') as f:
-            for item in ijson.items(f, 'item'):
-                if item['char'] == query:
-                    return item
-        
-    else:
-        # 查询汉字词语
-        with open(DICTIONARY_PATH[language]['word'], 'r', encoding='utf-8') as f:
-            for item in ijson.items(f, 'item'):
-                if item['word'] == query:
-                    return item
-                
-    raise ValueError(f"Query '{query}' not found in the dictionary.")
+    match language:
+        case 'zh':
+            if len(query) == 1:
+                # 查询单个汉字
+                with MongoClient(uri) as client:
+                    db = client['dictionary_chinese']
+                    char_collection = db['char']
+                    result = char_collection.find_one({'char': query})
+                    if result:
+                        result.pop('_id', None)  # 删除 MongoDB 自动生成的 _id 字段
+                        return result
+            else:
+                # 查询汉字词语
+                with MongoClient(uri) as client:
+                    db = client['dictionary_chinese']
+                    word_collection = db['word']
+                    result = word_collection.find_one({'word': query})
+                    if result:
+                        result.pop('_id', None)  # 删除 MongoDB 自动生成的 _id 字段
+                        return result
+
+    raise ValueError(f"未找到查询结果: {query}")
 
 
 if __name__ == '__main__':
-    char_query = lookup('蛇')
+    uri = 'URI_TO_YOUR_MONGODB_SERVER'  # Replace with your MongoDB URI
+    char_query = lookup('蛇', uri)
     print(char_query)
 
-    polyphonic_char_query = lookup('行')
+    polyphonic_char_query = lookup('行', uri)
     print(polyphonic_char_query)
 
-    word_query = lookup('蟒蛇')
+    word_query = lookup('蟒蛇', uri)
     print(word_query)
