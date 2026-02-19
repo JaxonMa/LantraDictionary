@@ -9,7 +9,7 @@ This script connects to a MongoDB server, creates a database and collection.
 from pymongo import MongoClient
 import ijson
 
-DICTIONARY_PATH = {
+PROCESSED_DICTIONARY_PATH = {
     'zh': {
         'char': 'processed/chinese/char.json',
         'word': 'processed/chinese/word.json'
@@ -22,11 +22,11 @@ def load_zh_data() -> tuple[dict, dict]:
     char_original_data = {}
     word_original_data = {}
 
-    with open(DICTIONARY_PATH['zh']['char'], 'r', encoding='utf-8') as f:
+    with open(PROCESSED_DICTIONARY_PATH['zh']['char'], 'r', encoding='utf-8') as f:
         for item in ijson.items(f, 'item'):
             char_original_data[item['char']] = item
 
-    with open(DICTIONARY_PATH['zh']['word'], 'r', encoding='utf-8') as f:
+    with open(PROCESSED_DICTIONARY_PATH['zh']['word'], 'r', encoding='utf-8') as f:
         for item in ijson.items(f, 'item'):
             word_original_data[item['word']] = item
 

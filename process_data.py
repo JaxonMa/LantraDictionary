@@ -15,8 +15,17 @@ import time
 import ijson
 import dictionary
 
+DICTIONARY_PATH = {
+    'zh': {
+        'char_base': 'dictionary/chinese/char_base.json',
+        'char_detail': 'dictionary/chinese/char_detail.json',
+        'related': 'dictionary/chinese/related.json',
+        'word': 'dictionary/chinese/word.json'
+    }
+}
 
-TARGET_PATH = {
+
+PROCESSED_DICTIONARY_PATH = {
     'zh': {
         'char': 'processed/chinese/char.json',
         'word': 'processed/chinese/word.json'
@@ -32,19 +41,19 @@ def load_data():
     related_data = {}
     word_data = {}
     
-    with open(dictionary.DICTIONARY_PATH['zh']['char_base'], 'r', encoding='utf-8') as f:
+    with open(DICTIONARY_PATH['zh']['char_base'], 'r', encoding='utf-8') as f:
         for item in ijson.items(f, 'item'):
             char_base_data[item['char']] = item
     
-    with open(dictionary.DICTIONARY_PATH['zh']['char_detail'], 'r', encoding='utf-8') as f:
+    with open(DICTIONARY_PATH['zh']['char_detail'], 'r', encoding='utf-8') as f:
         for item in ijson.items(f, 'item'):
             char_detail_data[item['char']] = item
     
-    with open(dictionary.DICTIONARY_PATH['zh']['related'], 'r', encoding='utf-8') as f:
+    with open(DICTIONARY_PATH['zh']['related'], 'r', encoding='utf-8') as f:
         for item in ijson.items(f, 'item'):
             related_data[item['char']] = item
     
-    with open(dictionary.DICTIONARY_PATH['zh']['word'], 'r', encoding='utf-8') as f:
+    with open(DICTIONARY_PATH['zh']['word'], 'r', encoding='utf-8') as f:
         for item in ijson.items(f, 'item'):
             word_data[item['word']] = item
     
@@ -117,7 +126,7 @@ def process():
     print("Processing Chinese characters...")
     t1 = time.time()
     char_results = process_char_data(char_base_data, char_detail_data, related_data)
-    with open(TARGET_PATH['zh']['char'], 'w', encoding='utf-8') as f:
+    with open(PROCESSED_DICTIONARY_PATH['zh']['char'], 'w', encoding='utf-8') as f:
         json.dump(char_results, f, ensure_ascii=False, indent=2)
     t2 = time.time()
     print(f"Time taken: {t2 - t1:.2f} seconds")
@@ -126,7 +135,7 @@ def process():
     print("Processing Chinese words...")
     t3 = time.time()
     word_results = process_word_data(word_data)
-    with open(TARGET_PATH['zh']['word'], 'w', encoding='utf-8') as f:
+    with open(PROCESSED_DICTIONARY_PATH['zh']['word'], 'w', encoding='utf-8') as f:
         json.dump(word_results, f, ensure_ascii=False, indent=2)
     t4 = time.time()
     print(f"Time taken: {t4 - t3:.2f} seconds")

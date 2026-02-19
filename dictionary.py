@@ -15,6 +15,7 @@ from pymongo import MongoClient
 def lookup(query: str, uri: str) -> dict[str, str]:
     """查询字典（词典）
     Args:
+        uri (str): MongoDB URI:
         query (str): 要查询的字词
     Returns:
         dict[str, str]: 查询结果
